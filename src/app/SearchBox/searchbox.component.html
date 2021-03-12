@@ -1,0 +1,16 @@
+<div>
+    <h1>
+        Searchbox
+    </h1>
+    <div>
+        {{displayVar}}
+    </div>
+    <div>
+        <input type="text" placeholder="search me!" [formControl]="searchBoxState">
+    </div>
+    <div>
+        <p>
+            Value: {{ searchBoxState.value }}
+        </p>
+    </div>
+</div>

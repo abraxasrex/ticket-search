@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "ticket-search"
+    }
+  },
+  "defaultProject": "ticket-search",
+  "cli": {
+    "analytics": false
+  }
 }
