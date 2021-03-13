@@ -10,4 +10,8 @@ Run `ng serve --prod` for a dev server. Navigate to `http://localhost:4200/`. Th
 
 Test performance of the application locally by using Lighthouse under the auditing tabs in the Chrome developer tools. When I ran this on my machine I scored an 89 on performance altogether using production build!
 
+## Running Unit Tests
+
+Run 'ng test' on the command line.
+
 

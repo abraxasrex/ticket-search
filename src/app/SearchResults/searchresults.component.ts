@@ -10,6 +10,8 @@ export class SearchResultsComponent implements OnInit {
 
   @Input() results;
   @Input() updatedSearches;
+  @Input() noResultState;
+  public displayNoResults;
   public resultsList = [];
   public recentSearches = [];
 
@@ -18,13 +20,11 @@ export class SearchResultsComponent implements OnInit {
   }
 
   pushRecentSearches (newSearchTerm) {
-    // if (this.recentSearches.length < 5) {
-    //   this.recentSearches.push(newSearchTerm);
-    // } else {
-    //   this.recentSearches.shift();
-    //   this.recentSearches.push(newSearchTerm);
-    // }
     this.recentSearches = newSearchTerm;
+  }
+
+  toggleNoResults (val) {
+    this.displayNoResults = val;
   }
 
   ngOnInit () {
@@ -38,6 +38,9 @@ export class SearchResultsComponent implements OnInit {
       }
       if(changes["updatedSearches"]) {
         this.pushRecentSearches(changes["updatedSearches"].currentValue);
+      }
+      if(changes["noResultState"]) {
+        this.toggleNoResults(changes["noResultState"].currentValue);
       }
   }
 }

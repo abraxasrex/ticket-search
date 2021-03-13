@@ -12,7 +12,6 @@ export class AppComponent {
   public recentSearches = [];
 
   populateSearchResults (results) {
-   // console.log("populateResults: ", $event);
     this.resultsList = results;
   }
 

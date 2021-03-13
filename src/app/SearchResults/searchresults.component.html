@@ -1,19 +1,26 @@
-    <h1>
-        Search Results
-    </h1>
+
     <div class="searchResultsDisplay">
+
         <div class="searchResultItems subSearchDisplay">
-            <div *ngFor='let result of results'>
-                <hr />
-                <div>
-                    {{result.name}}
+            <h1>
+                Search Results
+            </h1>
+            <div *ngIf="!displayNoResults">
+                <div *ngFor='let result of results'>
+                    <hr />
+                    <div>
+                        {{result.name}}
+                    </div>
+                    <div>
+                        <i>-{{ (result?.description?.length>200)? (result.description | slice:0:200)+'...':(result?.description) }}</i>
+                    </div>
+                    <div>
+                        <a target="_blank" href="{{result.url}}">Check it out!</a>
+                    </div>
                 </div>
-                <div>
-                    <i>-{{ (result?.description?.length>200)? (result.description | slice:0:200)+'...':(result?.description) }}</i>
-                </div>
-                <div>
-                    <a target="_blank" href="{{result.url}}">Check it out!</a>
-                </div>
+            </div>
+            <div *ngIf="displayNoResults">
+                <p> Sorry, no results. </p>
             </div>
         </div>
         <div class="recentSearches subSearchDisplay">

@@ -1,11 +1,10 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {debounceTime, distinctUntilChanged, map, tap, mergeMap} from 'rxjs/operators';
-import {Observable, Subscription} from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {debounceTime, distinctUntilChanged, tap, mergeMap, catchError} from 'rxjs/operators';
+import {Observable, Subscription, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import {API_KEY} from '../constants/constants';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'search-box',
@@ -13,28 +12,24 @@ import { ThrowStmt } from '@angular/compiler';
 })
 export class SearchBoxComponent implements OnInit {
 
-  public displayVar = "boom";
   private  apiPrefix = 'https://app.ticketmaster.com/discovery/v2/events.json?keyword=';  // URL to web api
   private apiSuffix = '&source=universe&countryCode=US&apikey=';
   
   searchBoxState: FormControl = new FormControl('');
   @Output() apiSearchResults = new EventEmitter();
   @Output() searchTermUpdated = new EventEmitter();
-  subscription: Subscription;
+  subscription: Subscription = new Subscription();
 
-  constructor(private http: HttpClient) {
-
-  }
+  constructor(private http: HttpClient) {}
 
   private getSearchResults (val: any): Observable<any>  {
-    console.log("val at service: ", val);
     return this.http.get<any>(this.apiPrefix + val + this.apiSuffix + API_KEY);
   }
 
   ngOnInit () {
       this.subscription = this.searchBoxState.valueChanges
         .pipe(
-          debounceTime(700),
+          debounceTime(600),
           distinctUntilChanged(),
           tap(text => this.searchTermUpdated.emit(text))
         )
@@ -42,15 +37,23 @@ export class SearchBoxComponent implements OnInit {
             mergeMap((data: any)=> {
               return this.getSearchResults(data);
             }),
+            catchError(this.handleError)
         ).subscribe((results)=> {
           if(results._embedded?.events?.length > 0) {
             this.apiSearchResults.emit(results._embedded.events);
           } else {
             this.apiSearchResults.emit(null);
-            console.log("no results! :(");
           }
         });
-      
+  }
+
+  handleError(error) {
+    let errorMessage = `Error Message: ${(error?.error.message || error.message)}`;
+    let errorStatus = error.status ? ` Error status: ${error.status}` : '';
+    let errorText = errorMessage + errorStatus;
+
+    window.alert(errorMessage);
+    return throwError(errorMessage);
   }
 
   ngOnDestroy () {
