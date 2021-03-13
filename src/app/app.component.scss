@@ -1,8 +1,36 @@
 
+$component-padding: 1rem;
 
 .search-components-container {
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    width: 100%;
 }
+
+search-box, search-results{
+    border: 1px solid black;
+    padding: $component-padding;
+    width: 100%;
+}
+
+.headliner {
+    text-decoration: underline;
+    width: 100%;
+    clear: both;
+    margin: 0 auto;
+}
+
+.title-heading {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.heading-container {
+    display: flex;
+    // flex-direction: column;
+    // justify-content: space-between;
+    // align-items: center;
+}
+

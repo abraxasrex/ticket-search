@@ -303,18 +303,20 @@
 <div class="content" role="main">
 
   <!-- Highlight Card -->
-  <div class="card highlight-card card-small">
-
-    <span>{{ title }} app is running!</span>
-
+  <div class="card highlight-card card-small heading-container">
+    <h1 class="title-heading"> {{title}} </h1>
+    <div class="headliner">
+      your gateway to visualizing the Ticketmaster API
+    </div>
   </div>
 
   <div class="card-container search-components-container">
-
-    <search-box>
+    <search-box 
+      (apiSearchResults)="populateSearchResults($event)"
+      (searchTermUpdated)="populateRecentSearches($event)">
     </search-box>
 
-    <search-results>
+    <search-results [updatedSearches]="recentSearches" [results]="resultsList">
     </search-results>
   </div>
 

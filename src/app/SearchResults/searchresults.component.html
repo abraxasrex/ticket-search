@@ -1,8 +1,27 @@
-<div>
     <h1>
         Search Results
     </h1>
-    <div>
-        {{displayVar}}
+    <div class="searchResultsDisplay">
+        <div class="searchResultItems subSearchDisplay">
+            <div *ngFor='let result of results'>
+                <hr />
+                <div>
+                    {{result.name}}
+                </div>
+                <div>
+                    <i>-{{ (result?.description?.length>200)? (result.description | slice:0:200)+'...':(result?.description) }}</i>
+                </div>
+                <div>
+                    <a target="_blank" href="{{result.url}}">Check it out!</a>
+                </div>
+            </div>
+        </div>
+        <div class="recentSearches subSearchDisplay">
+            <h5>
+                Recent Searches:
+            </h5>
+            <div *ngFor="let searchTerm of recentSearches">
+                <span>{{searchTerm}}</span>
+            </div>
+        </div>
     </div>
-</div>

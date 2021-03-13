@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {debounceTime} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, tap, mergeMap} from 'rxjs/operators';
+import {Observable, Subscription} from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import {API_KEY} from '../constants/constants';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'search-box',
@@ -8,21 +13,47 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class SearchBoxComponent implements OnInit {
 
-  displayVar = "boom";
+  public displayVar = "boom";
+  private  apiPrefix = 'https://app.ticketmaster.com/discovery/v2/events.json?keyword=';  // URL to web api
+  private apiSuffix = '&source=universe&countryCode=US&apikey=';
+  
   searchBoxState: FormControl = new FormControl('');
+  @Output() apiSearchResults = new EventEmitter();
+  @Output() searchTermUpdated = new EventEmitter();
+  subscription: Subscription;
 
-  constructor() {
+  constructor(private http: HttpClient) {
 
   }
 
+  private getSearchResults (val: any): Observable<any>  {
+    console.log("val at service: ", val);
+    return this.http.get<any>(this.apiPrefix + val + this.apiSuffix + API_KEY);
+  }
+
   ngOnInit () {
-      console.log ("searchbox rendered!");
-     // https://app.ticketmaster.com/discovery/v2/events.json?keyword=a&source=universe&countryCode=US&apikey=ZeNyd4289lf77eoEEWBBiMZkzhZl0mfY
-      this.searchBoxState.valueChanges
-        .pipe(debounceTime(600))
-        .subscribe((text)=> {
-            console.log(` final text: ${text}`)
-      })
+      this.subscription = this.searchBoxState.valueChanges
+        .pipe(
+          debounceTime(700),
+          distinctUntilChanged(),
+          tap(text => this.searchTermUpdated.emit(text))
+        )
+        .pipe(
+            mergeMap((data: any)=> {
+              return this.getSearchResults(data);
+            }),
+        ).subscribe((results)=> {
+          if(results._embedded?.events?.length > 0) {
+            this.apiSearchResults.emit(results._embedded.events);
+          } else {
+            this.apiSearchResults.emit(null);
+            console.log("no results! :(");
+          }
+        });
       
+  }
+
+  ngOnDestroy () {
+    this.subscription.unsubscribe();
   }
 }

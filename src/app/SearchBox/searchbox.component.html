@@ -3,14 +3,12 @@
         Searchbox
     </h1>
     <div>
-        {{displayVar}}
+        <input type="text" placeholder="search me!" 
+            [formControl]="searchBoxState">
     </div>
-    <div>
-        <input type="text" placeholder="search me!" [formControl]="searchBoxState">
-    </div>
-    <div>
+    <!-- <div>
         <p>
             Value: {{ searchBoxState.value }}
         </p>
-    </div>
+    </div> -->
 </div>
